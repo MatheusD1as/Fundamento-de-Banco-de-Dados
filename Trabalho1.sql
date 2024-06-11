@@ -114,3 +114,42 @@ insert into agenda(cliente_id,centro_desportivo_id,tipo_locavel_id,data_agendame
 );
 insert into agenda(cliente_id,centro_desportivo_id,tipo_locavel_id,data_agendamento) values(2, 3, 3, '2024-05-21 14:00:00');
 
+--QUESTÃO 3
+--- A vantagem de ter o email como chave primária é que não é preciso se preocupar em criar uma váriavel própria para guardar nesse caso 
+--o id do usuário nesse caso gerando menos trabalho a parte ruim é que não se tem controle de que essa chave primária sempre funcionará 
+--no banco pois não se tem controle sobre podemos dar um exemplo de que se um dia o google decidi atualizar o seu email aonde possam 
+--existir múltiplos gmails com mesmo nome, nesse caso seu banco de dados será comprometido com a decisão da google e terá que ser 
+--atualizada sendo assim essa uma grande desvantagem
+
+
+--QUESTÃO 4
+ALTER TABLE usuario ADD COLUMN email varchar(40);
+
+UPDATE usuario SET email = usuario_id;
+
+ALTER TABLE cliente DROP CONSTRAINT cliente_usuario_id_fkey;
+
+UPDATE usuario SET usuario_id = 1 WHERE email = 'helena.rodrigues@gmail.com';
+
+UPDATE usuario SET usuario_id = 2 WHERE email = 'ines.oliveira@gmail.com';
+
+UPDATE cliente SET usuario_id = 1 WHERE usuario_id = 'helena.rodrigues@gmail.com';
+
+UPDATE cliente SET usuario_id = 2 WHERE usuario_id = 'ines.oliveira@gmail.com';
+
+ALTER TABLE usuario ALTER COLUMN usuario_id TYPE bigint USING usuario_id::bigint;
+
+CREATE SEQUENCE usuario_pk_sequence OWNED BY usuario.usuario_id;
+
+select setval('usuario_pk_sequence', (select max(usuario_id) from usuario));
+
+select setval('usuario_pk_sequence', (select max(usuario_id) from usuario));
+
+alter table cliente alter column usuario_id type bigint using usuario_id::bigint
+
+ALTER TABLE cliente ADD CONSTRAINT cliente_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES usuario(usuario_id);
+
+insert into usuario (usuario_id, email, senha, data_ultimo_acesso, data_insercao, data_edicao, data_delecao, status_id)
+values (default, 'paulo.vargas@gmail.com','amf123', null, now(), null, null, 1);
+select * from usuario;
+
